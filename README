@@ -1,0 +1,27 @@
+HuffmanCoder - a small python demonstration of Huffman coding.
+
+Usage:
+$ python
+>>> import huffmancoder as h
+>>> t = h.HuffmanTree('hello world')
+>>> s = t.encode()
+>>> s
+'01100110101100000101101110101111'
+>>> t.decode(s)
+'hello world'
+
+
+The longer-term goals are to have something feasible set up for using huffman
+coding to 'compress' some text for transfer over a network.
+
+With the sending end using the full text to:
+
+ 1. create a huffman tree;
+ 2. encode the text; and
+ 3. compress/encode the tree
+
+before transferring the tree and text to the receiving end, which will:
+
+ 1. decode the tree; then
+ 2. use the decoded tree to decode the text for full reproduction on the other
+    side.

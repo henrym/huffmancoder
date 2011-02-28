@@ -3,9 +3,7 @@
 __about__ = """HuffmanCoder (huffmancoder)"""
 
 import heapq
-
-class Node:
-
+	
 class HuffmanTree:
 	class Node:
 		def __init__(self, f, ch=None):
@@ -21,7 +19,7 @@ class HuffmanTree:
 			self.f = f
 			self.parent = None
 			self.left = None
-			self.right = None
+			self.right = None	
 	
 		def __lt__(self, other):
 			"""Overridden less than operator to compare nodes by their
@@ -46,7 +44,13 @@ class HuffmanTree:
 		nodes = self._make_nodes(freq_dict)
 		self.tree = self._make_huffman_tree(nodes)
 
+		self.leaves = {}
 		self._enumerate_leaves(self.tree)
+
+		# TODO: We don't really want to save the text within the tree
+		# structure, as requiring the full text to construct a tree at
+		# the receiving end defeats the purpose of the encoding.
+		self.text = text
 
 	def _make_freq_dict(self, text):
 		f = {}
@@ -58,7 +62,7 @@ class HuffmanTree:
 		return f
 
 	def _make_nodes(self, freq_dict):
-		return [Node(v,k) for k,v in freq_dict.iteritems()]
+		return [HuffmanTree.Node(v,k) for k,v in freq_dict.iteritems()]
 
 	def _make_huffman_tree(self, nodes):
 		# Use a priority queue (implemented as a min-heap) to generate
@@ -74,7 +78,7 @@ class HuffmanTree:
 
 			# Make a internal node to join them with
 			#  f = sum of children's freq.
-			parent = Node(first.f + second.f)
+			parent = HuffmanTree.Node(first.f + second.f)
 			parent.left = first
 			parent.right = second
 			first.parent = parent
@@ -107,6 +111,7 @@ class HuffmanTree:
 				enc = '1' + enc
 			else:
 				pass # TODO: raise some Error
+			node = node.parent
 		return enc
 
 	def encode(self):
@@ -116,25 +121,28 @@ class HuffmanTree:
 		return senc
 
 
-	def decode_char(self, enc_c):
+	def _decode_char(self, enc_text, i):
+		"""Decodes to a single char of text, returning the char, and the number of
+		encoded-text characters to skip as tuple."""
+
+		init_i = i		
 		p = self.tree
 		while p.ch is None:
-			if enc_c == '0': p = p.left
-			elif enc_c == '1': p = p.right
+			if enc_text[i] == '0': p = p.left
+			elif enc_text[i] == '1': p = p.right
 			else: pass # TODO: raise some Error
-		return p.ch
+			i += 1
+		return (p.ch, i-init_i) 
 
 	def decode(self, enc_text):
 		"Decode enc_text according to this coder's huffman tree."
 		sdec = ''
 
-		# FIXME: THIS IS BROKEN -- decode_char needs more than one char
-		# for the bitstring, and it can be a variable number, which
-		# can't(?) be known at this point
-
 		i =0
 		l = len(enc_text)
 		while i < l:
-			sdec += self.decode_char(enc_text[i])
-			i += 1
+			dec, n = self._decode_char(enc_text, i)
+
+			sdec += dec
+			i += n
 		return sdec
