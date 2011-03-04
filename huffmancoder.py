@@ -159,3 +159,23 @@ class HuffmanTree:
 			sdec += dec
 			i += n
 		return sdec
+
+def main(args):
+	text = 'hello world'
+	if len(args) > 1:
+		text = args[1]
+	
+	t = HuffmanTree(text)
+	s = t.encode()
+	print s
+	d = t.decode(s)
+	print d
+	a = bits_to_ascii(s)
+	print a
+
+	print
+	print len(s), len(a), (len(a)/float(len(s)))*100
+
+if __name__ == '__main__':
+	import sys	
+	main(sys.argv)
