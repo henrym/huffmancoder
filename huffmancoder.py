@@ -138,7 +138,7 @@ class HuffmanTree:
 		"""Decodes to a single char of text, returning the char, and the number of
 		encoded-text characters to skip as tuple."""
 
-		init_i = i		
+		init_i = i
 		p = self.tree
 		while p.ch is None:
 			if enc_text[i] == '0': p = p.left
