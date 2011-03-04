@@ -3,6 +3,19 @@
 __about__ = """HuffmanCoder (huffmancoder)"""
 
 import heapq
+
+def bits_to_ascii(bitstring):
+	leftover = 8 - (len(bitstring) % 8)
+	bitstring += '0'*leftover # add 0s to end of bitstring
+	asciistring = str(leftover) # first char in ascii huffman-coded string is the leftover bits, which is guarenteed to only be 1 char
+	
+	i = 0
+	while i < len(bitstring):
+		s2 = bitstring[i:i+8]
+		asciistring += chr(int(s2, 2))
+		i += 8
+	return asciistring
+	
 	
 class HuffmanTree:
 	class Node:
